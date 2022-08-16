@@ -80,6 +80,8 @@ jobs:
              cd frontend
              npm install
              npm test
+             pm2 stop default
+             pm2 start npm -- start
                 
   test-backend:
     docker:
