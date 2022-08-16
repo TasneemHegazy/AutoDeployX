@@ -4,11 +4,11 @@ Description: >
 Parameters:
   ID:
     Description: Unique identifier.
-    Type: Stringheheeh
+    Type: String
 
 Resources:
   InstanceSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
+    Type: AWS::EC2::SecurityGroupjhg
     Properties:
       GroupName: !Sub UdaPeople-${ID}
       GroupDescription: Allow port 22 and port 3030.
