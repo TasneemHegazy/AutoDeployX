@@ -128,7 +128,7 @@ jobs:
 
   deploy-infrastructure:
     docker:
-      - image: amazon/aws-cli
+      - image: cimg/base:2021.04
     steps:
       - checkout    
       - run:
