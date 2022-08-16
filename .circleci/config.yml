@@ -131,7 +131,7 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
-      - sudo pip install_awscli
+      - install awscli
       - run:
           name: Ensure back-end infrastructure exists
           command: |
