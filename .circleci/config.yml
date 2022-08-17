@@ -133,6 +133,11 @@ jobs:
     steps:
       - checkout    
       - run:
+          name: Installing necessary packages
+          command: |
+            sudo apt update
+            sudo apt install -y tar gzip curl software-properties-common
+      - run:
           name: Ensure back-end infrastructure exists
           command: |
             aws cloudformation deploy \
