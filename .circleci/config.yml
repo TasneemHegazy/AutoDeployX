@@ -131,13 +131,15 @@ jobs:
     docker:
       - image: amazon/aws-cli
     steps:
-      - checkout    
+      - checkout   
+      - add_ssh_keys:
+          fingerprints: ["82:66:b2:5f:21:73:a0:1c:dd:35:12:23:ff:2c:d6:53"] 
       - run:
-          name: Installing necessary packages
+          name: Installing dependencies
           command: |
-            apt-get update
-            apt-get install -y tar gzip curl software-properties-common
-            apt-get --update nodejs npm
+            apk add --update ansible
+            apk install -y tar gzip curl software-properties-common
+            apk --update nodejs npm
       - run:
           name: Ensure back-end infrastructure exists
           command: |
