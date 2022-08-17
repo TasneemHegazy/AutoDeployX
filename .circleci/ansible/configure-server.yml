@@ -11,18 +11,25 @@
     ansible_python_interpreter: /usr/bin/python3
     ansible_host_key_checking: false
     ansible_stdout_callback: yaml
+  
+- name: install ans start app
+  command:  pm2 start main.js
+   args:
+     chdir: ~/backend/dist
   environment:
-    NODE_ENV: production
-    ENVIRONMENT: production
-    TYPEORM_CONNECTION: postgres
-    TYPEORM_HOST: "{{ lookup('env','TYPEORM_HOST') }}"
-    TYPEORM_USERNAME: "{{ lookup('env','TYPEORM_USERNAME') }}"
-    TYPEORM_PASSWORD: "{{ lookup('env','TYPEORM_PASSWORD') }}"
-    TYPEORM_DATABASE: "{{ lookup('env','TYPEORM_DATABASE') }}"
-    TYPEORM_PORT: '5432'
-    TYPEORM_ENTITIES: "./modules/domain/**/*.entity.js"
-    TYPEORM_MIGRATIONS: "{{ lookup('env', 'TYPEORM_MIGRATIONS')}}"
-    TYPEORM_MIGRATIONS_DIR: "{{ lookup('env', 'TYPEORM_MIGRATIONS_DIR')}}"
+       ENVIRONMENT: production
+       NODE_ENV: production
+       TYPEORM_CONNECTION: postgres
+       TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
+       TYPEORM_MIGRATIONS_DIR: "./migrations"
+       TYPEORM_MIGRATIONS: "./migrations/*.js"
+       TYPEORM_ENTITIES: "./modules/domain/**/*.entity.js"
+       TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST') }}"
+       TYPEORM_PORT: "{{ lookup('env', 'TYPEORM_PORT') }}"
+       TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
+       TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
+       TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
+       TYPEORM_PORT: '5432'
   pre_tasks:
     - name: "wait 600 seconds for target connection to become reachable/usable."
       wait_for_connection:
