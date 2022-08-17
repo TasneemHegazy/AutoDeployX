@@ -134,12 +134,12 @@ jobs:
       - checkout   
       - add_ssh_keys:
           fingerprints: ["82:66:b2:5f:21:73:a0:1c:dd:35:12:23:ff:2c:d6:53"] 
-      - run:
-          name: Installing dependencies
-          command: |
-            apt add --update ansible
-            apt install -y tar gzip 
-            apt add --update nodejs npm
+      # - run:
+      #     name: Installing dependencies
+      #     command: |
+      #       apk add --update ansible
+      #       apk install -y tar gzip 
+      #       apk add --update nodejs npm
       - run:
           name: Ensure back-end infrastructure exists
           command: |
@@ -169,10 +169,10 @@ jobs:
             --output text >> ~/project/.circleci/ansible/inventory.txt
             cat ~/project/.circleci/ansible/inventory.txt
       
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - project/.circleci/ansible/inventory.txt
+      # - persist_to_workspace:
+      #     root: ~/
+      #     paths:
+      #       - project/.circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure      
 
 #   configure-infrastructure:
