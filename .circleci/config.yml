@@ -296,12 +296,18 @@ jobs:
       - run:
           name: Send migration status to kvdb.io
           command: |
-            if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
-            then
-              curl https://kvdb.io/${KVDB_BUCKET}/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+            echo "has been executed successfully" > ./migration_status.txt
+            pwd && ls -al
+            if grep -q "has been executed successfully" ./migration_status.txt 
+            then 
+              echo "has been executed successfully"
+              # curl -k "Content-Type: text/plain" -H "token: PGKNfN5JZQcZbajTazsxYg" --request PUT --data "1" https://kvdb.io/PGKNfN5JZQcZbajTazsxYg/migrations-${CIRCLE_WORKFLOW_ID:0:7}
+            else
+              echo "has failed"
+              # curl -k "Content-Type: text/plain" -H "token: PGKNfN5JZQcZbajTazsxYg" --request PUT --data "0" https://kvdb.io/PGKNfN5JZQcZbajTazsxYg/migrations-${CIRCLE_WORKFLOW_ID:0:7}
             fi
-      - destroy-environment
-      - revert-migrations  
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7} 
 
 #   deploy-frontend:
 #     docker:
