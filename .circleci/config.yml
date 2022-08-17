@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  aws-cli: circleci/aws-cli@2.0.3
+
 # commands:
   # destroy-environment:
   #   description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -217,6 +220,23 @@ jobs:
 #             exit 1
 #       # Here's where you will add some code to rollback on failure      
 
+  configure-infrastructure:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["82:66:b2:5f:21:73:a0:1c:dd:35:12:23:ff:2c:d6:53"] 
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible 
+      - run:
+          name: Configure server
+          command: |
+            ansible-playbook -i inventory.txt main4.yml
+
+
 #   run-migrations:
 #     docker:
 #       # Docker image here that supports NodeJS
@@ -348,8 +368,8 @@ workflows:
           filters:
             branches:
               only: [master]
-      # - configure-infrastructure:
-      #     requires: [deploy-infrastructure]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
       # - run-migrations:
       #     requires: [configure-infrastructure]
       # - deploy-frontend:
