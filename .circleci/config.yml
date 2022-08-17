@@ -169,20 +169,20 @@ jobs:
             --output text >> ~/project/.circleci/ansible/inventory.txt
             cat ~/project/.circleci/ansible/inventory.txt
 
-      - run:
-          name: Install sudo if not there
-          command: |
-            test -e /usr/bin/sudo || apt install -y sudo
-            register: output
-            changed_when: output.stdout|trim() != ""
+      # - run:
+      #     name: Install sudo if not there
+      #     command: |
+      #       test -e /usr/bin/sudo || apt install -y sudo
+      #       register: output
+      #       changed_when: output.stdout|trim() != ""
 
-      - run:
-          name: Install Ansiplev2
-          command: |
-            sudo apt update
-            sudo apt install software-properties-common
-            sudo add-apt-repository --yes --update ppa:ansible/ansible
-            sudo apt install ansible
+      # - run:
+      #     name: Install Ansiplev2
+      #     command: |
+      #       sudo apt update
+      #       sudo apt install software-properties-common
+      #       sudo add-apt-repository --yes --update ppa:ansible/ansible
+      #       sudo apt install ansible
       
       # - persist_to_workspace:
       #     root: ~/
