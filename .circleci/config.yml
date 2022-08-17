@@ -137,9 +137,9 @@ jobs:
       - run:
           name: Installing dependencies
           command: |
-            apk add --update ansible
-            apk install -y tar gzip 
-            apk add --update nodejs npm
+            apt add --update ansible
+            apt install -y tar gzip 
+            apt add --update nodejs npm
       - run:
           name: Ensure back-end infrastructure exists
           command: |
