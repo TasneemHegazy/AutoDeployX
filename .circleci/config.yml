@@ -1,23 +1,23 @@
 version: 2.1
 
-commands:
-  destroy-environment:
-    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-    parameters:
-      workflow_id:
-        type: string
-        default: ${CIRCLE_WORKFLOW_ID:0:7}
-    steps:
-      - run:
-          name: Destroy environments
-          when: on_fail
-          command: |
-            BACKEND PUBLIC_IP-$(aws ec2 describe-instances \
-              --filters "Name-tag:Name,Values-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --query 'Reservations[*].Instances[*].Public IpAddress' \
-              --output text)
-            echo$BACKEND_PUBLIC_IP >> .circleci/ansible/inventory.txt
-            cat .circleci/ansible/inventory.txt
+# commands:
+  # destroy-environment:
+  #   description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+  #   parameters:
+  #     workflow_id:
+  #       type: string
+  #       default: ${CIRCLE_WORKFLOW_ID:0:7}
+  #   steps:
+  #     - run:
+  #         name: Destroy environments
+  #         when: on_fail
+  #         command: |
+  #           BACKEND PUBLIC_IP-$(aws ec2 describe-instances \
+  #             --filters "Name-tag:Name,Values-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+  #             --query 'Reservations[*].Instances[*].Public IpAddress' \
+  #             --output text)
+  #           echo$BACKEND_PUBLIC_IP >> .circleci/ansible/inventory.txt
+  #           cat .circleci/ansible/inventory.txt
             
 
 #   revert-migrations:
@@ -139,7 +139,8 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout   
-       
+      - add_ssh_keys:
+          fingerprints: ["82:66:b2:5f:21:73:a0:1c:dd:35:12:23:ff:2c:d6:53"] 
       # - run:
       #     name: Installing dependencies
       #     command: |
@@ -174,7 +175,7 @@ jobs:
             --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
             --output text >> ~/project/.circleci/ansible/inventory.txt
             cat ~/project/.circleci/ansible/inventory.txt
-      - destroy-environment:
+     # - destroy-environment:
 
       # - run:
       #     name: Install sudo if not there
@@ -197,22 +198,24 @@ jobs:
       #       - project/.circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure      
 
-  configure-infrastructure:
-    docker:
-      - imgage : python3.7-alpine3.11
-    steps:
-      - checkout:
-      - add_ssh_keys:
-          fingerprints: ["82:66:b2:5f:21:73:a0:1c:dd:35:12:23:ff:2c:d6:53"]
-
-      - run:
-          name: Install dependencies
-          command: |
-            apk add --update ansible
-      - run:
-          name: Configure server
-          command: |
-            ansible -playbook -i inventory.text main4.yml      
+#   configure-infrastructure:
+#     docker:
+#       # Docker image here that supports Ansible
+#     steps:
+#       # Checkout code from git
+#       # Add ssh keys with fingerprint
+#       # attach workspace
+#       - run:
+#           name: Install dependencies
+#           command: |
+#             # Your code here
+#             exit 1
+#       - run:
+#           name: Configure server
+#           command: |
+#             # Your code here
+#             exit 1
+#       # Here's where you will add some code to rollback on failure      
 
 #   run-migrations:
 #     docker:
@@ -345,8 +348,8 @@ workflows:
           filters:
             branches:
               only: [master]
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
+      # - configure-infrastructure:
+      #     requires: [deploy-infrastructure]
       # - run-migrations:
       #     requires: [configure-infrastructure]
       # - deploy-frontend:
