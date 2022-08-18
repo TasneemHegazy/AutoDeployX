@@ -1,7 +1,7 @@
 ---
 
-- name: "configuration play" 
-  hosts: ubuntu
+- name: "configuration play." 
+  hosts: web
   remote_user: ubuntu
   become: true  
   become_method: sudo
@@ -22,10 +22,10 @@
       raw: test -e /usr/bin/python3 || (apt -y update && apt install -y python3)
       changed_when: false
 
-    - name: install ans start app
-      command:  pm2 start main.js
-       args:
-        chdir: ~/backend/dist
+    # - name: install ans start app
+    #   command: pm2 start main.js
+    #    args:
+    #     chdir: ~/backend/dist
   environment:
        ENVIRONMENT: production
        NODE_ENV: production
@@ -37,7 +37,7 @@
        TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
        TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
        TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
-       TYPEORM_PORT: 5432
+       TYPEORM_PORT: '5432'
 
 
 
@@ -45,3 +45,4 @@
 
   roles:
     - configure-server
+    - configure-prometheus-node-exporter

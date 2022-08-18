@@ -1,7 +1,7 @@
 version: 2.1
 
-orbs:
-  aws-cli: circleci/aws-cli@2.0.3
+# orbs:
+#   aws-cli: circleci/aws-cli@2.0.3
 
 
 commands:
@@ -302,9 +302,7 @@ jobs:
             # Your code here
             cd .circleci/ansible
             cat inventory.txt
-            ansible-playbook -i inventory.txt configure-server.yml
-      - destroy-environment:
-          id: "${CIRCLE_WORKFLOW_ID:0:7}"      
+            ansible-playbook -i inventory.txt configure-server.yml     
       
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
@@ -318,7 +316,6 @@ jobs:
       - run:
           name: Run migrations
           command: |
-            # Your code here
             cd backend
             npm install
             npm run migrations > migrations_dump.txt
