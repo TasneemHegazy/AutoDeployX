@@ -317,7 +317,6 @@ jobs:
           name: Run migrations
           command: |
             cd backend
-            cat .env
             npm install
             npm run migrations > migrations_dump.txt
             npm audit fix
@@ -326,7 +325,7 @@ jobs:
       - run:
           name: Send migration results to kbdb.io
           command: |
-            # Your code here
+            cd backend
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
               curl https://kvdb.io/NGmYCCpsFgHxJjewbZzPuy/migration_${CIRCLE_WORKFLOW_ID:0:7} -d '1'
