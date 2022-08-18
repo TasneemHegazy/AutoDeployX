@@ -31,8 +31,8 @@
        ENVIRONMENT: production
        NODE_ENV: production
        TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION')}}"
-       TYPEORM_MIGRATIONS_DIR: "./migrations"
-       TYPEORM_MIGRATIONS: "./migrations/*.js"
+       TYPEORM_MIGRATIONS: "{{ lookup('env', 'TYPEORM_MIGRATIONS')}}"
+       TYPEORM_MIGRATIONS_DIR: "{{ lookup('env', 'TYPEORM_MIGRATIONS_DIR')}}"
        TYPEORM_ENTITIES: "./modules/domain/**/*.entity.js"
        TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST') }}"
        TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
