@@ -9,6 +9,7 @@ commands:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
       workflow_id:
+        default: "123"
         type: string
     steps:
       - run:
@@ -330,7 +331,7 @@ jobs:
               curl https://kvdb.io/NGmYCCpsFgHxJjewbZzPuy/migration_${CIRCLE_WORKFLOW_ID:0:7} -d '1'
             fi
       - destroy-environment:
-          id: "${CIRCLE_WORKFLOW_ID:0:7}"
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
       - revert-migrations:
           WorkflowId: "${CIRCLE_WORKFLOW_ID:0:7}"
 
