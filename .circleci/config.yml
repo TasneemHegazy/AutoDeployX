@@ -113,7 +113,6 @@ jobs:
           name: Back-end build
           working_directory: ./backend
           command: |
-            cd backend
             npm i
             npm run build
             cp .env dist/.env
