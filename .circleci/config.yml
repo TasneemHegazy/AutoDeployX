@@ -9,34 +9,44 @@ commands:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
       workflow_id:
-        default: "123"
         type: string
+        default: "123"
     steps:
       - run:
-          name: Destroy environments
+          name: Destroying environment
           when: on_fail
           command: |
-            aws cloudformation delete-stack --stack-name udapeople-backend-<<parameters.workflow_id>>
-            aws s3 rm s3://udapeople-<<parameters.workflow_id>> --recursive
-            aws cloudformation delete-stack --stack-name udapeople-frontend-<<parameters.workflow_id>>
+            aws cloudformation delete-stack \
+              --stack-name "udapeople-frontend-<< parameters.workflow_id >>"
+            aws cloudformation delete-stack \
+              --stack-name "udapeople-backend-<< parameters.workflow_id >>"
+            aws s3 rm "s3://udapeople-<< parameters.workflow_id >>" --recursive
   install-awscli: 
     steps:
       - run:
           name: Install aws cli
           command: |
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install
+            pip install awscli
   
   install-ansible:
     steps:
       - run:
           name: Install ansible
           command: |
-            sudo apt update
-            sudo apt install software-properties-common
-            sudo add-apt-repository --yes --update ppa:ansible/ansible
-            sudo apt install ansible
+            apk add --update ansible
+
+            
+  install-node:
+    steps:
+      - run: 
+          name: "Install node js"
+          command: |
+            yum install -y nodejs  
+            npm install --global n
+            npm start
+            npm cache clean -f
+            n 13.8.0       
+            npm config get prefix
   # destroy-environment:
   #   description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
   #   parameters:
@@ -59,22 +69,24 @@ commands:
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
-      # Add parameter here  
-      WorkflowId:
-        type: string   
+      workflowID:
+        type: string
     steps:
       - run:
           name: Revert migrations
-          # Add when this will run
           when: on_fail
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS=$(curl --insecure https://kvdb.io/NGmYCCpsFgHxJjewbZzPuy/migration_<<parameters.WorkflowId>>)
-            if(( $SUCCESS==1 )); 
+            SUCCESS=$(curl -H "token: 6a3ae534-27b0-46a8-832e-23ee1d810653" --request GET https://api.memstash.io/values/DB_MIGRATION_STATUS_<< parameters.workflowID >>)
+            echo $SUCCESS
+            if(( $SUCCESS=="success" ));
             then
               cd ~/project/backend
-              npm install  
-              npm run migrations:revert          
+              
+              npm install --global n
+              npm start
+              npm cache clean -f
+              npm run migrations:revert
             fi
             
 jobs:
@@ -266,57 +278,104 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
       - destroy-environment:
-          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+          workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
+
+#   configure-infrastructure:
+#     docker:
+#       - image: python:3.7-alpine3.11
+#     steps:
+#       - checkout
+#       - add_ssh_keys:
+#           fingerprints: ["82:66:b2:5f:21:73:a0:1c:dd:35:12:23:ff:2c:d6:53"] 
+      
+#       - attach_workspace:
+#           at: ~/
+#       - run:
+#           name: Install dependencies
+#           command: |
+#             apk add --update curl nodejs npm zip
+#             apk add --upgrade bash
+#             apk add --update ansible
+#             apk add openssh-client
+#             pip3 install awscli
+#       - run:
+#           name: Build backend app
+#           command: |
+#             cd backend
+#             npm i
+#             npm run build
+#             cd dist
+#             cp ../package.json .
+#             zip -rq dist.zip *
+#             mkdir -p ~/project/.circleci/ansible/roles/deploy_backend/files/
+#             mv dist.zip ~/project/.circleci/ansible/roles/deploy_backend/files/      
+#       # - run:
+#       #     name: Configure server
+#       #     command: |
+#       #       cat ~/project/.circleci/ansible/inventory.txt
+#       #       export ANSIBLE_HOST_KEY_CHECKING=False
+#       #       ansible-playbook -i ~/project/.circleci/ansible/inventory.txt ~/project/.circleci/ansible/configure-server.yml
+#           # cd .circleci/ansible
+#           # cat  inventory.txt
+#           # ansible-playbook -i inventory.txt configure-server.yml
+      
+#       - run:
+#           name: Configure server
+#           command: |
+#             # Your code here
+#             cd .circleci/ansible
+#             cat inventory.txt
+#             ansible-playbook -i inventory.txt configure-server.yml     
+      
+#       - destroy-environment:
+#           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
   configure-infrastructure:
     docker:
       - image: python:3.7-alpine3.11
+        environment:
+          NODE_ENV: "local"
+          VERSION: "1"
+          ENVIRONMENT: "production"
+          TYPEORM_CONNECTION: $TYPEORM_CONNECTION
+          TYPEORM_HOST: $TYPEORM_HOST
+          TYPEORM_USERNAME: $TYPEORM_USERNAME
+          TYPEORM_PASSWORD: $TYPEORM_PASSWORD
+          TYPEORM_DATABASE: $TYPEORM_DATABASE
+          TYPEORM_PORT: $TYPEORM_PORT
+          TYPEORM_ENTITIES: $TYPEORM_ENTITIES
     steps:
       - checkout
+      - install-ansible
+      - install-awscli
       - add_ssh_keys:
-          fingerprints: ["82:66:b2:5f:21:73:a0:1c:dd:35:12:23:ff:2c:d6:53"] 
-      
+          fingerprints: ["82:66:b2:5f:21:73:a0:1c:dd:35:12:23:ff:2c:d6:53"]
       - attach_workspace:
           at: ~/
-      - run:
-          name: Install dependencies
-          command: |
-            apk add --update curl nodejs npm zip
-            apk add --upgrade bash
-            apk add --update ansible
-            apk add openssh-client
-            pip3 install awscli
-      - run:
-          name: Build backend app
-          command: |
-            cd backend
-            npm i
-            npm run build
-            cd dist
-            cp ../package.json .
-            zip -rq dist.zip *
-            mkdir -p ~/project/.circleci/ansible/roles/deploy_backend/files/
-            mv dist.zip ~/project/.circleci/ansible/roles/deploy_backend/files/      
-      # - run:
-      #     name: Configure server
-      #     command: |
-      #       cat ~/project/.circleci/ansible/inventory.txt
-      #       export ANSIBLE_HOST_KEY_CHECKING=False
-      #       ansible-playbook -i ~/project/.circleci/ansible/inventory.txt ~/project/.circleci/ansible/configure-server.yml
-          # cd .circleci/ansible
-          # cat  inventory.txt
-          # ansible-playbook -i inventory.txt configure-server.yml
-      
+
+#       - run:
+#           name: Build backend app
+#           command: |
+#             cd backend
+#             npm i
+#             npm run build
+#             cd dist
+#             cp ../package.json .
+#             zip -rq dist.zip *
+#             mkdir -p ~/project/.circleci/ansible/roles/deploy_backend/files/
+#             mv dist.zip ~/project/.circleci/ansible/roles/deploy_backend/files/      
       - run:
           name: Configure server
           command: |
-            # Your code here
             cd .circleci/ansible
-            cat inventory.txt
-            ansible-playbook -i inventory.txt configure-server.yml     
-      
+            cat ~/project/.circleci/ansible/inventory.txt
+            export ANSIBLE_HOST_KEY_CHECKING=False
+            ansible-playbook -i ~/project/.circleci/ansible/inventory.txt ~/project/.circleci/ansible/configure-server.yml
+      # Here's where you will add some code to rollback on failure
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+
+
 
   # run-migrations:
   #   docker:
@@ -350,33 +409,39 @@ jobs:
 
   run-migrations:
     docker:
-      - image: sleavely/node-awscli:14.x
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - run:
           name: Run migrations
           command: |
             cd backend
-            cat .env
-            npm i
-            npm run build
-            npm run migrations
-      - run:
-          name: Send migration results to memstash
-          command: |
-            echo "has been done successfully" > ./migration_status.txt
-            pwd && ls -al
-            if grep -q "has been done successfully" ./migration_status.txt 
-            then 
-              echo "has been done successfully"
-              curl -H "Content-Type: text/plain" -H "token: ecdfc255-81e1-4056-9efa-2d7fa10812e1" --request PUT --data "1" https://api.memstash.io/values/migrations-${CIRCLE_WORKFLOW_ID:0:7}
-            else
-              echo "has failed"
-              curl -H "Content-Type: text/plain" -H "token: ecdfc255-81e1-4056-9efa-2d7fa10812e1" --request PUT --data "0" https://api.memstash.io/values/migrations-${CIRCLE_WORKFLOW_ID:0:7}
-            fi
-      # # Here's where you will add some code to rollback on failure
-      # - destroy-environment:
-      #     workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+            npm install --global n
+            npm start
+            mkdir ~/.npm-global
+            npm config set prefix '~/.npm-global'
+            export PATH=~/.npm-global/bin:$PATH
+            source ~/.profile
+            npm run migrations > migrations_log.txt
+            cat ./migrations_log.txt
+ #           npm cache clean -f
+
+    #  npm install typescript -g
+    #  npm config get prefix
+
+#       - run:
+#           name: Send migration results to memstash
+#           command: |
+#             if grep "has been executed successfull" ~/project/backend/migrations_log.txt;
+#             then
+#               echo "Successful"
+#               curl -H "Content-Type: text/plain" -H "token: 6a3ae534-27b0-46a8-832e-23ee1d810653" --request PUT --data "success" https://api.memstash.io/values/DB_MIGRATION_STATUS_${CIRCLE_WORKFLOW_ID}
+#             else
+#               echo "Failure"
+#               curl -H "Content-Type: text/plain" -H "token: 6a3ae534-27b0-46a8-832e-23ee1d810653" --request PUT --data "failure" https://api.memstash.io/values/DB_MIGRATION_STATUS_${CIRCLE_WORKFLOW_ID}
+#             fi
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
 #   deploy-frontend:
 #     docker:
@@ -487,15 +552,16 @@ workflows:
           requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend]
-      - deploy-infrastructure:
-          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-          filters:
-            branches:
-              only: [master]
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-      - run-migrations:
-          requires: [configure-infrastructure]
+#       - deploy-infrastructure:
+#           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+#           filters:
+#             branches:
+#               only: [master]
+#       - configure-infrastructure:
+#           requires: [deploy-infrastructure]
+      # - run-migrations
+#       :
+#           requires: [configure-infrastructure]
       # - deploy-frontend:
       #     requires: [run-migrations]
       # - deploy-backend:
