@@ -1,7 +1,10 @@
 version: 2.1
 
 
+<<<<<<< Updated upstream
 # test__
+=======
+>>>>>>> Stashed changes
 commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -35,6 +38,8 @@ commands:
             python3 get-pip.py --user
             python3 -m pip install --user ansible
             python3 -m pip install --upgrade --user ansible
+
+
 
 
   install-node:
@@ -210,6 +215,7 @@ jobs:
       # Here's where you will add some code to rollback on failure
       # - destroy-environment:
       #     id: "${CIRCLE_WORKFLOW_ID:0:7}"      
+
 
 
   # configure-infrastructure:
