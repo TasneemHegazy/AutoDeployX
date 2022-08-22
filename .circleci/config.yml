@@ -51,10 +51,15 @@ commands:
       - run: 
           name: "Install node js"
           command: |
-            yum install -y nodejs  
-            npm install --global n
-            npm start
-            n 13.8.0 
+            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+            sudo apt install -y nodejs  
+            sudo npm install --global n
+            sudo n 13.8.0        
+
+       # yum install -y nodejs  
+            # npm install --global n
+            # npm start
+            # n 13.8.0 
        # curl -L https://raw.githubusercontent.com/tj/n/master/bin/n -o n
             # bash n lts
             # npm install -g n
