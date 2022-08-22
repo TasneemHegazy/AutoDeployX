@@ -159,6 +159,7 @@ jobs:
       - checkout
       - restore_cache:
           keys: [backend-build]
+      # Your job code here
       - run:
           name: Analyze/Scan backend
           command: |
@@ -169,7 +170,7 @@ jobs:
             npm audit --audit-level=critical
 
 
-  deploy-infrastructure:
+  deploy-infrastructure-:
     docker:
       - image: amazon/aws-cli
     steps:
@@ -460,13 +461,13 @@ workflows:
           requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend]
-      - deploy-infrastructure:
+      - deploy-infrastructure-:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           filters:
             branches:
               only: [master]
       - configure-infrastructure:
-          requires: [deploy-infrastructure]
+          requires: [deploy-infrastructure-]
       # - run-migrations
 #       :
 #           requires: [configure-infrastructure]
