@@ -159,7 +159,6 @@ jobs:
       - checkout
       - restore_cache:
           keys: [backend-build]
-      # Your job code here
       - run:
           name: Analyze/Scan backend
           command: |
@@ -170,7 +169,7 @@ jobs:
             npm audit --audit-level=critical
 
 
-  deploy-infrastructure-:
+  deploy-infrastructure:
     docker:
       - image: amazon/aws-cli
     steps:
@@ -207,7 +206,6 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-      Here's where you will add some code to rollback on failure
       - destroy-environment:
           id: "${CIRCLE_WORKFLOW_ID:0:7}"      
 
@@ -462,7 +460,7 @@ workflows:
           requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend]
-      - deploy-infrastructure-:
+      - deploy-infrastructure:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           filters:
             branches:
