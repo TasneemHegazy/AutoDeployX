@@ -203,38 +203,35 @@ jobs:
             --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
             --output text >> ~/project/.circleci/ansible/inventory.txt
             cat ~/project/.circleci/ansible/inventory.txt
-      # - persist_to_workspace:
-      #     root: ~/
-      #     paths:
-      #       - project/.circleci/ansible/inventory.txt
-      # Here's where you will add some code to rollback on failure
-      # - destroy-environment:
-      #     id: "${CIRCLE_WORKFLOW_ID:0:7}"      
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/inventory.txt
+      Here's where you will add some code to rollback on failure
+      - destroy-environment:
+          id: "${CIRCLE_WORKFLOW_ID:0:7}"      
 
 
-  # configure-infrastructure:
-  #   docker:
-  #     # Docker image here that supports Ansible
-  #     - image: cimg/base:stable
-  #   steps:
-  #     # Checkout code from git
-  #     - checkout
-  #     - install-ansible
-  #     - install-awscli
-  #     # Add ssh keys with fingerprint
-  #     - add_ssh_keys:
-  #         fingerprints: ["82:66:b2:5f:21:73:a0:1c:dd:35:12:23:ff:2c:d6:53"]
-  #     - attach_workspace:
-  #         at: ~/           
-  #     - run:
-  #         name: Configure server
-  #         command: |
-  #           # Your code here
-  #           cd .circleci/ansible
-  #           cat inventory.txt
-  #           ansible-playbook -i inventory.txt configure-server.yml
-  #     - destroy-environment:
-  #         id: "${CIRCLE_WORKFLOW_ID:0:7}"
+  configure-infrastructure:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - install-ansible
+      - install-awscli
+      - add_ssh_keys:
+          fingerprints: ["82:66:b2:5f:21:73:a0:1c:dd:35:12:23:ff:2c:d6:53"]
+      - attach_workspace:
+          at: ~/           
+      - run:
+          name: Configure server
+          command: |
+            # Your code here
+            cd .circleci/ansible
+            cat inventory.txt
+            ansible-playbook -i inventory.txt configure-server.yml
+      - destroy-environment:
+          id: "${CIRCLE_WORKFLOW_ID:0:7}"
             
 
 #   run-migrations:
@@ -470,8 +467,8 @@ workflows:
           filters:
             branches:
               only: [master]
-#       - configure-infrastructure:
-#           requires: [deploy-infrastructure]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
       # - run-migrations
 #       :
 #           requires: [configure-infrastructure]
