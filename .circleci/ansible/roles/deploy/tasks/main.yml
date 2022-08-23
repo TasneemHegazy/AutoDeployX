@@ -13,7 +13,7 @@
 - name: "Install node dependencies"
   shell: |
     cd ~/backend-app
-    sudo npm install -g npm@latest
+    npm install -g npm@latest
 
 #npm install
   
