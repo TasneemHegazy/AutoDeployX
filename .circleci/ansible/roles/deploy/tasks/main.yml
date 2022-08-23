@@ -14,20 +14,15 @@
   shell: |
     cd ~/backend-app
     npm install
-
 - name: "Start app with pm2"
   shell: |
    cd ~/backend-app/dist
    pm2 stop default
    pm2 start main.js
- #  pm2 start npm -- start
-
   args: 
     chdir: ~/backend-app/dist
   
   
-  register: execute_node
-
   environment: 
     ENVIRONMENT: production
     TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
@@ -39,6 +34,9 @@
     TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
     TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
     TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
+
+
+  register: execute_node
 
 - name: print message
   debug:
