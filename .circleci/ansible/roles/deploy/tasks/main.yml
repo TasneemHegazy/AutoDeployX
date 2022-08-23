@@ -21,9 +21,11 @@
    pm2 start main.js
   args: 
     chdir: ~/backend-app/dist
-  
+  register: execute_node
+
   
   environment: 
+    NODE_ENV: production
     ENVIRONMENT: production
     TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
     TYPEORM_MIGRATIONS_DIR: "./migrations"
@@ -36,7 +38,6 @@
     TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
 
 
-  register: execute_node
 
 - name: print message
   debug:

@@ -22,6 +22,18 @@
     state: latest
     update_cache: yes
 
+
+- name: "install n"
+  become: yes
+  npm:
+    name: n
+    global: yes
+    production: yes
+
+- name: install node
+  shell: |
+    curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash - && sudo apt-get install -y nodejs
+    
 - name: "install pm2"
   become: yes
   npm:
