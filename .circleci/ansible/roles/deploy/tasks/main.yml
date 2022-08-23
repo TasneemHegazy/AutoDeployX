@@ -10,10 +10,30 @@
     src: artifact.tar.gz
     dest: ~/backend-app
 
+
+
+- name: "add node.js from nodesource"
+  become: true
+  shell: |
+   curl -sL https://deb.nodesource.com/setup_lts.x  | sudo -E bash -
+
+- name: "install node.js"
+  become: true
+  apt:
+    name: [:nodejs]
+    state: latest
+    update_cache: yes
+
+- name: "install pm2 globally"
+  npm:
+    name: pm2
+    global: yes
+
 - name: "Install node dependencies"
   shell: |
     cd ~/backend-app
     npm install 
+    npm i --legacy-peer-deps
   # -g npm@latest
 
 #npm install
