@@ -51,7 +51,7 @@ commands:
       - run: 
           name: "Install node js"
           command: |
-            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+            curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
             sudo apt install -y nodejs  
             sudo npm install --global n
             sudo n 13.8.0        
@@ -454,7 +454,7 @@ jobs:
   
 
             
-            
+
 workflows:
   default:
     jobs:
