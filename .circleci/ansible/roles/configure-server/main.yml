@@ -15,12 +15,12 @@
   apt:
     autoremove: yes
 
-- name: "install dependencies."
+- name: "Install dependencies"
   become: yes
   apt:
+    update_cache: yes
     name: ["nodejs", "npm"]
     state: latest
-    update_cache: yes
 
 
 - name: "install n"
@@ -33,7 +33,7 @@
 - name: install node
   shell: |
     curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash - && sudo apt-get install -y nodejs
-    
+
 - name: "install pm2"
   become: yes
   npm:
