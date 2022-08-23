@@ -327,6 +327,11 @@ jobs:
           command: |
             cd backend
             npm install
+            npm i --legacy-peer-deps
+            apk add --update ansible rsync 
+            apk add --update nodejs npm
+            apk add curl
+            pip3 install awscli
       - install-ansible
       - run:
           name: package backend
