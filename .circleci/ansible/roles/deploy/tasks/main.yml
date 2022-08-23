@@ -13,7 +13,10 @@
 - name: "Install node dependencies"
   shell: |
     cd ~/backend-app
-    npm install
+    sudo npm install -g npm@latest
+
+#npm install
+  
 - name: "Start app with pm2"
   shell: |
    cd ~/backend-app/dist
