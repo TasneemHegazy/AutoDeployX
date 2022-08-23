@@ -24,7 +24,6 @@
   register: execute_node
 
   environment: 
-    NODE_ENV: production
     ENVIRONMENT: production
     TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
     TYPEORM_MIGRATIONS_DIR: "./migrations"
