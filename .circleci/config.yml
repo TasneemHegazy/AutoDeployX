@@ -315,6 +315,19 @@ jobs:
   deploy-backend:
     docker:
       - image: cimg/base:stable
+        environment:
+         NODE_ENV: "production"
+         VERSION: "1"
+         ENVIRONMENT: "production"
+         TYPEORM_CONNECTION: $TYPEORM_CONNECTION
+         TYPEORM_HOST: $TYPEORM_HOST
+         TYPEORM_USERNAME: $TYPEORM_USERNAME
+         TYPEORM_PASSWORD: $TYPEORM_PASSWORD
+         TYPEORM_DATABASE: $TYPEORM_DATABASE
+         TYPEORM_PORT: $TYPEORM_PORT
+         TYPEORM_MIGRATIONS_DIR: "./migrations"
+         TYPEORM_ENTITIES: "./modules/domain/**/*.entity{.ts,.js}"
+         TYPEORM_MIGRATIONS: "./migrations/*.ts"
     steps:
       - checkout
       - install-awscli
@@ -330,18 +343,19 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            cd backend
-            npm install
-            npm i --legacy-peer-deps
+            sudo apt -y install tar gzip curl
+      # cd backend
+            # npm install
+            # npm i --legacy-peer-deps
       - run:
           name: package backend
           command: |
             cd backend
+            npm install
             npm run build
             cd ..
             tar -C backend -czvf artifact.tar.gz .
-            ls
-            cp artifact.tar.gz .circleci/ansible/roles/deploy/files
+            cp artifact.tar.gz .circleci/ansible/roles/deploy/files 
       - run:
           name: deploy backend
           command: |
