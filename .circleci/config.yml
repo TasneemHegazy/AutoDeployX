@@ -327,20 +327,6 @@ jobs:
             command: |
               sudo apt update
               sudo apt install openssh-server openssh-client
-      - run:
-          name: Install Ansible latest
-          command: |
-            sudo apt update
-            sudo apt install software-properties-common
-            sudo add-apt-repository --yes --update ppa:ansible/ansible
-            sudo apt install ansible
-            sudo apt install ansible -y
-      - run:
-          name: Install Node.js 
-          command: |
-            sudo apt update
-            sudo apt install nodejs npm
-            node --version 
       - restore_cache:
           keys: [backend-build]
       - run:
