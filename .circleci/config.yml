@@ -310,7 +310,7 @@ jobs:
       - destroy-environment:
           id: "${CIRCLE_WORKFLOW_ID:0:7}"
       - revert-migrations:
-          WorkflowId: "${CIRCLE_WORKFLOW_ID:0:7}"          
+          WorkflowId: "${CIRCLE_WORKFLOW_ID:0:7}"             
                     
   deploy-backend:
     docker:
@@ -330,6 +330,7 @@ jobs:
           command: |
             cd backend
             npm install
+            npm update
             npm i --legacy-peer-deps
             apk add --update ansible rsync 
             apk add --update nodejs npm
