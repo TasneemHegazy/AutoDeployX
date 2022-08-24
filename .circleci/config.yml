@@ -322,11 +322,7 @@ jobs:
           fingerprints: [82:66:b2:5f:21:73:a0:1c:dd:35:12:23:ff:2c:d6:53]
       - attach_workspace:
           at: ~/
-      - run:
-            name: Install dependencies
-            command: |
-              sudo apt update
-              sudo apt install openssh-server openssh-client
+      - install-node
       - restore_cache:
           keys: [backend-build]
       - run:
