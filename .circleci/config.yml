@@ -331,8 +331,6 @@ jobs:
             cd backend
             npm install
             npm i --legacy-peer-deps
-            sudo apt curl
-            pip3 install awscli
       - install-ansible
       - run:
           name: package backend
