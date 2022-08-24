@@ -1,9 +1,38 @@
 ---
 
+- name: "Create backend app directory"
+  file:
+    path: ~/backend-app
+    state: directory
+- name: "Unarchive backend files"
+  unarchive:
+    src: artifact.tar.gz
+    dest: ~/backend-app
+- name: "Install node packages"
+  shell: |
+    cd ~/backend-app
+    npm install
+- name: "Start app"
+  shell: |
+   cd ~/backend-app/dist
+   pm2 stop default
+   pm2 start main.js
+  args: 
+    chdir: ~/backend-app/dist
+  environment: 
+    ENVIRONMENT: production
+    TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
+    TYPEORM_MIGRATIONS_DIR: "./migrations"
+    TYPEORM_MIGRATIONS: "./migrations/*.js"
+    TYPEORM_ENTITIES: "./modules/domain/**/*.entity.js"
+    TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST') }}"
+    TYPEORM_PORT: "{{ lookup('env', 'TYPEORM_PORT') }}"
+    TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
+    TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
+    TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
 
 
-
-  # -g npm@latest
+# -g npm@latest
 
 #npm install
   
@@ -16,43 +45,6 @@
 #     chdir: ~/backend-app/dist
 #   register: execute_node
 
-
-
-- name: "Create backend app directory"
-  file:
-    path: ~/backend-app
-    state: directory
-- name: "Unarchive backend files"
-  unarchive:
-    src: artifact.tar.gz
-    dest: ~/backend-app
-- name: "Install node dependencies"
-  shell: |
-    cd ~/backend-app
-    npm install 
-    npm i --legacy-peer-deps
-- name: "Start app"
-  shell: |
-   cd ~/backend-app/dist
-   pm2 stop default
-   pm2 start main.js
-  args: 
-    chdir: ~/backend-app/dist
-  environment:
-      ENVIRONMENT: production
-      TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
-      TYPEORM_MIGRATIONS_DIR: "./migrations"
-      TYPEORM_MIGRATIONS: "./migrations/*.js"
-      TYPEORM_ENTITIES: "./modules/domain/**/*.entity.js"
-      TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST') }}"
-      TYPEORM_PORT: "{{ lookup('env', 'TYPEORM_PORT') }}"
-      TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
-      TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
-      TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
-#register: execute_node
-- name: print message
-  debug:
-    msg: "{{ execute_node.stdout_lines }}"
 
 
 
