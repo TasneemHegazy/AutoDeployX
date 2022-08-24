@@ -3,7 +3,6 @@
 - name: "configuration play." 
   hosts: web
   remote_user: ubuntu
-  user: ubuntu
   become: true
   become_method: sudo
   become_user: root
