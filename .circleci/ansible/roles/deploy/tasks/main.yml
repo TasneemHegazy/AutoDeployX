@@ -1,25 +1,46 @@
 ---
 
-- name: "Create backend app directory"
+# - name: "Create backend app directory"
+#   file:
+#     path: ~/backend-app
+#     state: directory
+
+# - name: "Unarchive backend files"
+#   unarchive:
+#     src: artifact.tar.gz
+#     dest: ~/backend-app
+
+# - name: "Install node packages"
+#   shell: |
+#     cd ~/backend-app
+#     npm install
+
+# - name: "Start app"
+#   shell: |
+#    cd ~/backend-app/dist
+#    pm2 stop default
+#    pm2 start main.js
+- name: "Create Backend Directory"
   file:
-    path: ~/backend-app
+    path: /home/ubuntu/backend
     state: directory
 
 - name: "Unarchive backend files"
   unarchive:
     src: artifact.tar.gz
-    dest: ~/backend-app
+    dest: /home/ubuntu/backend
 
-- name: "Install node packages"
+- name: "Installing Node Dependencies"
+  become: true
   shell: |
-    cd ~/backend-app
+    cd /home/ubuntu/backend
     npm install
-
-- name: "Start app"
+- name: "Executing node app with pm2 "
+  become: true
   shell: |
-   cd ~/backend-app/dist
-   pm2 stop default
-   pm2 start main.js
+    cd /home/ubuntu/backend/dist
+    pm2 stop default
+    pm2 start -f main.js 
   args: 
     chdir: ~/backend-app/dist
   environment: 
