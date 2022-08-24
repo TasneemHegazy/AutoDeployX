@@ -336,7 +336,7 @@ jobs:
       - install-node
 
       - add_ssh_keys:
-          fingerprints: [82:66:b2:5f:21:73:a0:1c:dd:35:12:23:ff:2c:d6:53]
+          fingerprints: ["82:66:b2:5f:21:73:a0:1c:dd:35:12:23:ff:2c:d6:53"]
       - attach_workspace:
           at: ~/
       - restore_cache:
@@ -345,6 +345,8 @@ jobs:
           name: Install dependencies
           command: |
             sudo apt -y install tar gzip curl
+            cd backend
+            npm install
       # cd backend
             # npm install
             # npm i --legacy-peer-deps
