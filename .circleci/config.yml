@@ -342,21 +342,9 @@ jobs:
             sudo apt install nodejs npm
             node --version 
       - restore_cache:
-          keys: [backend-build]
+          keys: [backend-deps]
       - run:
-          name: Install dependencies
-          command: |
-            cd backend
-            npm install
-            npm i --legacy-peer-deps
-            apk add --update ansible rsync 
-            apk add --update nodejs npm
-            apk add curl
-            pip3 install awscli
-            apk add --update ansible nodejs npm tar gzip
-      - install-ansible
-      - run:
-          name: package backend
+          name: Deploy backend
           command: |
             cd backend
             npm install
@@ -364,20 +352,14 @@ jobs:
             cd ..
             tar -C backend -czvf artifact.tar.gz .
             ls
-            cp artifact.tar.gz .circleci/ansible/roles/deploy/files
-      - run:
-          name: deploy backend
-          command: |
-            export TYPEORM_MIGRATIONS_DIR=./migrations
-            export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
-            export TYPEORM_MIGRATIONS=./migrations/*.ts
+            cp ./artifact.tar.gz .circleci/ansible/roles/deploy
             cd .circleci/ansible
             cat inventory.txt
-            ansible-playbook -i inventory.txt deploy-backend.yml           
+            ansible-playbook -i inventory.txt deploy-backend.yml
       - destroy-environment:
-          id: "${CIRCLE_WORKFLOW_ID:0:7}"
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7} 
       - revert-migrations:
-          WorkflowId: "${CIRCLE_WORKFLOW_ID:0:7}"
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
 #   smoke-test:
 #     docker:
