@@ -4,14 +4,17 @@
   file:
     path: ~/backend-app
     state: directory
+
 - name: "Unarchive backend files"
   unarchive:
     src: artifact.tar.gz
     dest: ~/backend-app
+
 - name: "Install node packages"
   shell: |
     cd ~/backend-app
     npm install
+
 - name: "Start app"
   shell: |
    cd ~/backend-app/dist
@@ -30,6 +33,7 @@
     TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
     TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
     TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
+  register: execute_node
 
 
 # -g npm@latest
