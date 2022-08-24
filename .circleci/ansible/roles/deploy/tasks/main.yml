@@ -12,6 +12,22 @@
   shell: |
     cd ~/backend-app
     npm install
+
+
+- name: "Run build"
+  command: npm run build
+  become: yes
+  become_user: ubuntu
+  environment:
+    PATH: ~/backend-app
+
+- name: "Reload PM2 processes"
+  command: pm2 reload all
+  become: yes
+  become_user: ubuntu
+  environment:
+    PATH: ~/backend-app
+    
 - name: "Start app"
   shell: |
    cd ~/backend-app/dist
