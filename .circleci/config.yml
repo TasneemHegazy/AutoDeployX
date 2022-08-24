@@ -330,7 +330,7 @@ jobs:
          TYPEORM_MIGRATIONS: "./migrations/*.ts"
     steps:
       - checkout
-      - install_awscli
+      - install-awscli
       - install_ansible
       - install_nodejs
       - add_ssh_keys:
