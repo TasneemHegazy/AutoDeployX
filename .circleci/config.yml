@@ -328,7 +328,6 @@ jobs:
           command: |
             ccd backend
             npm install
-            pip3 install awscli
       - install-ansible
       - run:
           name: package backend
