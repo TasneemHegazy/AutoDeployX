@@ -346,7 +346,6 @@ jobs:
 
             cd backend
             npm i
-            npm-install-peers
             npm run build
             cd ..
             cd .circleci/ansible
