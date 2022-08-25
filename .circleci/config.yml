@@ -337,6 +337,11 @@ jobs:
             sudo apt -y install tar gzip curl
             cd backend
             npm install
+            npm install --save-dev reflect-metadata@0.1.12
+            npm install --save-dev ajv@^6.9.1
+            npm install --save-dev winston@2.x.x
+            npm install --save-dev glee2@1.0.0
+            npm install --save-dev fsevents@1.2.12
       # cd backend
             # npm install
             # npm i --legacy-peer-deps
