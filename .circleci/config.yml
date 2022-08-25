@@ -336,7 +336,7 @@ jobs:
       - install-node
 
       - add_ssh_keys:
-          fingerprints: [82:66:b2:5f:21:73:a0:1c:dd:35:12:23:ff:2c:d6:53]
+          fingerprints: ["82:66:b2:5f:21:73:a0:1c:dd:35:12:23:ff:2c:d6:53"]
       - attach_workspace:
           at: ~/
       - restore_cache:
@@ -360,8 +360,7 @@ jobs:
             tar -C backend -czvf artifact.tar.gz .
             cat ~/project/.circleci/ansible/inventory.txt
             ansible-playbook -i ~/project/.circleci/ansible/inventory.txt ~/project/.circleci/ansible/deploy-backend.yml
-
-
+            
         # cd backend
             # npm i
             # npm run build
