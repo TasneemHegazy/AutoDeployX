@@ -277,58 +277,37 @@ jobs:
     docker:
       # Docker image here that supports AWS CLI
       - image: cimg/node:13.8.0 
-    
     steps:
+      # Checkout code from git
       - checkout
+      - install-awscli
+      - install-node
       - restore_cache:
-          keys:
-            - build-frontend
-      - dependencies
+          keys: [frontend-build]
+      - run:
+          name: Install dependencies
+          command: |
+            cd frontend
+            npm install
       - run:
           name: Get backend url
           command: |
-             BACKEND_IP=$(aws cloudformation describe-stacks --stack-name udapeople-backend-"${CIRCLE_WORKFLOW_ID:0:7}" --query "Stacks[0].Outputs[0].OutputValue" --output text)
-             API_URL="http://${BACKEND_IP}:3030"
-             echo "API_URL=${API_URL}" >> frontend/.env
+            export BACKEND_IP=$(aws ec2 describe-instances \
+              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --output text)
+            export API_URL="http://${BACKEND_IP}:3030" 
+            echo "API_URL = ${API_URL}"
+            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+            cat frontend/.env
       - run:
           name: Deploy frontend objects
-          working_directory: ./frontend
           command: |
-            npm i
+            cd frontend
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
-            aws s3 cp dist "s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --recursive
-    # steps:
-    #   # Checkout code from git
-    #   - checkout
-    #   - install-awscli
-    #   - install-node
-    #   - restore_cache:
-    #       keys: [frontend-build]
-    #   - run:
-    #       name: Install dependencies
-    #       command: |
-    #         cd frontend
-    #         npm install
-    #   - run:
-    #       name: Get backend url
-    #       command: |
-    #         export BACKEND_IP=$(aws ec2 describe-instances \
-    #           --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-    #           --query 'Reservations[*].Instances[*].PublicIpAddress' \
-    #           --output text)
-    #         export API_URL="http://${BACKEND_IP}:3030" 
-    #         echo "API_URL = ${API_URL}"
-    #         echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
-    #         cat frontend/.env
-    #   - run:
-    #       name: Deploy frontend objects
-    #       command: |
-    #         cd frontend
-    #         npm run build
-    #         tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
-    #         aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-    #   # Here's where you will add some code to rollback on failure
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+      # Here's where you will add some code to rollback on failure
       - destroy-environment:
           id: "${CIRCLE_WORKFLOW_ID:0:7}"
       - revert-migrations:
@@ -357,7 +336,7 @@ jobs:
       - install-node
 
       - add_ssh_keys:
-          fingerprints: ["82:66:b2:5f:21:73:a0:1c:dd:35:12:23:ff:2c:d6:53"]
+          fingerprints: [82:66:b2:5f:21:73:a0:1c:dd:35:12:23:ff:2c:d6:53]
       - attach_workspace:
           at: ~/
       - restore_cache:
