@@ -1,51 +1,80 @@
 ---
+  - name: Copy files
+    become: true
+    copy:
+      src: /root/project/artifact.tar.gz
+      dest: /home/ubuntu/artifact.tar.gz
+  - name: Unarchive
+    become: true
+    shell : |
+        cd /home/ubuntu/
+        tar xvzf artifact.tar.gz -C .
 
-- name: "Create backend app directory"
-  file:
-    path: ~/backend-app
-    state: directory
-- name: "Unarchive backend files"
-  unarchive:
-    src: artifact.tar.gz
-    dest: ~/backend-app
-- name: "Install node packages"
-  shell: |
-    cd ~/backend-app
-    npm install
+  - name: "run server"
+    become: true
+    shell : |
+        cd /home/ubuntu/
+        npm install
+        pm2 stop default
+        pm2 start npm -- start
+    environment:
+      ENVIRONMENT: production
+      TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
+      TYPEORM_MIGRATIONS_DIR: "./migrations"
+      TYPEORM_MIGRATIONS: "./migrations/*.js"
+      TYPEORM_ENTITIES: "./modules/domain/**/*.entity.js"
+      TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST') }}"
+      TYPEORM_PORT: "{{ lookup('env', 'TYPEORM_PORT') }}"
+      TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
+      TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
+      TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
+      
+# - name: "Create backend app directory"
+#   file:
+#     path: ~/backend-app
+#     state: directory
+# - name: "Unarchive backend files"
+#   unarchive:
+#     src: artifact.tar.gz
+#     dest: ~/backend-app
+# - name: "Install node packages"
+#   shell: |
+#     cd ~/backend-app
+#     npm install
 
 
-- name: "Run build"
-  command: npm run build
-  become: yes
-  become_user: ubuntu
-  environment:
-    PATH: ~/backend-app
+# - name: "Run build"
+#   command: npm run build
+#   become: yes
+#   become_user: ubuntu
+#   environment:
+#     PATH: ~/backend-app
 
-- name: "Reload PM2 processes"
-  command: pm2 reload all
-  become: yes
-  become_user: ubuntu
-  environment:
-    PATH: ~/backend-app
-    
-- name: "Start app"
-  shell: |
-   cd ~/backend-app/dist
-   pm2 stop default
-   pm2 start main.js
-  args: 
-    chdir: ~/backend-app/dist
-  environment: 
-    ENVIRONMENT: production
-    TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
-    TYPEORM_MIGRATIONS_DIR: "./migrations"
-    TYPEORM_MIGRATIONS: "./migrations/*.js"
-    TYPEORM_ENTITIES: "./modules/domain/**/*.entity.js"
-    TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST') }}"
-    TYPEORM_PORT: "{{ lookup('env', 'TYPEORM_PORT') }}"
-    TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
-    TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
-    TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
+# - name: "Reload PM2 processes"
+#   command: pm2 reload all
+#   become: yes
+#   become_user: ubuntu
+#   environment:
+#     PATH: ~/backend-app
+
+# - name: "Start app"
+#   shell: |
+#    cd ~/backend-app/dist
+#    pm2 stop default
+#    pm2 start main.js
+#   args: 
+#     chdir: ~/backend-app/dist
+#   environment: 
+#     ENVIRONMENT: production
+#     TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
+#     TYPEORM_MIGRATIONS_DIR: "./migrations"
+#     TYPEORM_MIGRATIONS: "./migrations/*.js"
+#     TYPEORM_ENTITIES: "./modules/domain/**/*.entity.js"
+#     TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST') }}"
+#     TYPEORM_PORT: "{{ lookup('env', 'TYPEORM_PORT') }}"
+#     TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
+#     TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
+#     TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
 
 # - name: "Create Backend Directory"
 #   file:
