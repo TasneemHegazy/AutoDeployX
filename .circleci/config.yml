@@ -6,7 +6,6 @@ commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
-      # Add parameter here
       id:
         default: "123"
         type: string   
@@ -28,7 +27,6 @@ commands:
             unzip awscliv2.zip
             sudo ./aws/install
             
-        # msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi
   
   install-ansible:
     steps:
@@ -40,10 +38,7 @@ commands:
             sudo add-apt-repository --yes --update ppa:ansible/ansible
             sudo apt install ansible
             
-         # curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-            # python3 get-pip.py --user
-            # python3 -m pip install --user ansible
-            # python3 -m pip install --upgrade --user ansible
+
 
 
   install-node:
@@ -56,13 +51,7 @@ commands:
             sudo npm install --global n
             sudo n 13.8.0        
 
-       # yum install -y nodejs  
-            # npm install --global n
-            # npm start
-            # n 13.8.0 
-       # curl -L https://raw.githubusercontent.com/tj/n/master/bin/n -o n
-            # bash n lts
-            # npm install -g n
+
            
 
 
@@ -347,46 +336,42 @@ jobs:
       - revert-migrations:
           WorkflowId: "${CIRCLE_WORKFLOW_ID:0:7}"
 
-#   smoke-test:
-#     docker:
-#       - image: cimg/base:stable 
-#     steps:
-#       # Checkout code from git
-#       - checkout
-#       - install-awscli
-#       - install-node
-#       - run:
-#           name: backend smoke test
-#           command: |
-#             # your code here
-#             BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
-#               --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-#               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-#               --output text)
-#             export API_URL=http://${BACKEND_PUBLIC_IP}:3030
-#             echo "${API_URL}"
-#             if curl -s ${API_URL}/api/status | grep "ok"
-#             then 
-#               exit 0
-#             else
-#               exit 1
-#             fi
-#       - run:
-#           name: Frontend smoke test.
-#           command: |
-#             # your code here
-#             FRONTEND_WEBSITE=http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com
-#             if curl -s $FRONTEND_WEBSITE | grep "Welcome"
-#             then
-#               exit 0
-#             else
-#               exit 1
-#             fi
-#       # Here's where you will add some code to rollback on failure  
-#       - destroy-environment:
-#           id: "${CIRCLE_WORKFLOW_ID:0:7}"
-#       - revert-migrations:
-#           WorkflowId: "${CIRCLE_WORKFLOW_ID:0:7}"
+  smoke-test:
+    docker:
+      - image: cimg/base:stable 
+    steps:
+      - checkout
+      - install-awscli
+      - install-node
+      - run:
+          name: backend smoke test
+          command: |
+            BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
+              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --output text)
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "${API_URL}"
+            if curl "${API_URL}/api/status" | grep "ok"
+            then
+                return 0
+            else
+                return 1
+            fi
+      - run:
+          name: Frontend smoke test.
+          command: |
+            FRONTEND_WEBSITE=http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com
+            if curl -s $FRONTEND_WEBSITE | grep "Welcome"
+            then
+              exit 0
+            else
+              exit 1
+            fi
+      - destroy-environment:
+          id: "${CIRCLE_WORKFLOW_ID:0:7}"
+      - revert-migrations:
+          WorkflowId: "${CIRCLE_WORKFLOW_ID:0:7}"
 
 #   cloudfront-update:
 #     docker:
@@ -471,8 +456,8 @@ workflows:
           requires: [run-migrations]
       - deploy-backend:
           requires: [run-migrations]
-      # - smoke-test:
-      #     requires: [deploy-backend, deploy-frontend]
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
       # - cloudfront-update:
       #     requires: [smoke-test]
       # - cleanup:
