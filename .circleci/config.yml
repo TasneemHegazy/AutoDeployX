@@ -342,6 +342,7 @@ jobs:
             npm install --save-dev winston@2.x.x
             npm install --save-dev glee2@1.0.0
             npm install --save-dev fsevents@1.2.12
+            npm audit fix
       # cd backend
             # npm install
             # npm i --legacy-peer-deps
