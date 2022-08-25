@@ -275,13 +275,10 @@ jobs:
 
   deploy-frontend:
     docker:
-      # Docker image here that supports AWS CLI
-      - image: cimg/base:stable
+      - image: cimg/node:13.8.0 
     steps:
-      # Checkout code from git
       - checkout
       - install-awscli
-      - install-node
       - restore_cache:
           keys: [frontend-build]
       - run:
@@ -304,89 +301,47 @@ jobs:
           name: Deploy frontend objects
           command: |
             cd frontend
-            npm install 
+            npm update
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-      # Here's where you will add some code to rollback on failure
       - destroy-environment:
           id: "${CIRCLE_WORKFLOW_ID:0:7}"
       - revert-migrations:
-          WorkflowId: "${CIRCLE_WORKFLOW_ID:0:7}"             
+          WorkflowId: "${CIRCLE_WORKFLOW_ID:0:7}"           
                     
   deploy-backend:
     docker:
       - image: cimg/base:stable
-
     steps:
       - checkout
+      - install-awscli
       - add_ssh_keys:
-          fingerprints: ["82:66:b2:5f:21:73:a0:1c:dd:35:12:23:ff:2c:d6:53"]
+          fingerprints: [82:66:b2:5f:21:73:a0:1c:dd:35:12:23:ff:2c:d6:53]
       - attach_workspace:
           at: ~/
-      - install-awscli
       - install-node
-      - install-ansible
-
-
       - restore_cache:
           keys: [backend-build]
       - run:
           name: Install dependencies
           command: |
-            sudo apt -y install tar gzip curl
-            cd backend
+            ccd backend
             npm install
-      # npm install --save-dev reflect-metadata@0.1.12
-            # npm install --save-dev ajv@^6.9.1
-            # npm install --save-dev winston@2.x.x
-            # npm install --save-dev glee2@1.0.0
-            # npm install --save-dev fsevents@1.2.12
-            # npm audit fix
-      # cd backend
-            # npm install
-            # npm i --legacy-peer-deps
+            pip3 install awscli
+      - install-ansible
       - run:
           name: package backend
           command: |
-
             cd backend
             npm install
             npm run build
             cd ..
-            cd .circleci/ansible
-            mkdir files
-            cd files
-            cat inventory.txt
-            ansible-playbook -i inventory.txt deploy-backend.yml 
             tar -C backend -czvf artifact.tar.gz .
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
-            # cd backend
-            # npm install
-            # npm run build
-            # cd ..
-            # tar -C backend -czvf artifact.tar.gz .
-            # cat ~/project/.circleci/ansible/inventory.txt
-            # ansible-playbook -i ~/project/.circleci/ansible/inventory.txt ~/project/.circleci/ansible/deploy-backend.yml
-            
-         # cd backend
-            # npm install
-            # npm run build
-            # cd ..
-            # tar -C backend -czvf artifact.tar.gz .
-      #       # cp artifact.tar.gz .circleci/ansible/roles/deploy/files 
-      # - run:
-      #     name: deploy backend
-      #     command: |
-      #       export TYPEORM_MIGRATIONS_DIR=./migrations
-      #       export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
-      #       export TYPEORM_MIGRATIONS=./migrations/*.ts
-      #       cd .circleci/ansible
-      #       cat inventory.txt
-      #       ansible-playbook -i inventory.txt deploy-backend.yml           
       - destroy-environment:
           id: "${CIRCLE_WORKFLOW_ID:0:7}"
       - revert-migrations:
