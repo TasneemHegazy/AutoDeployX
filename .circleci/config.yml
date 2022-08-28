@@ -86,7 +86,6 @@ jobs:
       - run:
           name: Build front-end
           command: |
-            # Your code here
             cd frontend
             npm install
             npm run build
@@ -104,7 +103,6 @@ jobs:
       - run:
           name: Back-end build
           command: |
-             # Your code here
              cd backend
              npm install
              npm run build

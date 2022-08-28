@@ -8,10 +8,7 @@
   unarchive:
     src: artifact.tar.gz
     dest: ~/backend-app
-# - name: "Install node packages"
-#   shell: |
-#     cd ~/backend-app
-#     npm install
+
 - name: "Install dependencies"
   become: yes
   apt:
