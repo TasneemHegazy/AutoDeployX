@@ -160,7 +160,6 @@ jobs:
       - checkout
       - restore_cache:
           keys: [backend-build]
-      # Your job code here
       - run:
           name: Analyze/Scan backend
           command: |
@@ -233,6 +232,7 @@ jobs:
       - destroy-environment:
           id: "${CIRCLE_WORKFLOW_ID:0:7}"
             
+
 
   run-migrations:
     docker:
