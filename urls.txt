@@ -2,4 +2,4 @@ Public Url to GitHub repository:
 https://github.com/TasneemHegazy/Cloud_project_3
 
 Public URL for your S3 Bucket:
-http://udapeople-aa5e2d6.s3-website-us-east-1.amazonaws.com
+http://udapeople-60ecb3e.s3-website-us-east-1.amazonaws.com
