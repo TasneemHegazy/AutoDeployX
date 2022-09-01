@@ -363,6 +363,7 @@ jobs:
       - revert-migrations:
           WorkflowId: "${CIRCLE_WORKFLOW_ID:0:7}"
 
+
   cloudfront-update:
     docker:
       - image: cimg/base:stable
