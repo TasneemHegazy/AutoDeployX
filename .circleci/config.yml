@@ -27,7 +27,6 @@ commands:
             unzip awscliv2.zip
             sudo ./aws/install
             
-  
   install-ansible:
     steps:
       - run:
@@ -37,9 +36,6 @@ commands:
             sudo apt install software-properties-common
             sudo add-apt-repository --yes --update ppa:ansible/ansible
             sudo apt install ansible
-            
-
-
 
   install-node:
     steps:
@@ -50,11 +46,6 @@ commands:
             sudo apt install -y nodejs  
             sudo npm install --global n
             sudo n 13.8.0        
-
-
-           
-
-
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
@@ -75,6 +66,7 @@ commands:
               npm run migrations:revert          
             fi
        
+
 jobs:
   build-frontend:
     docker:
@@ -230,8 +222,7 @@ jobs:
             ansible-playbook -i inventory.txt configure-server.yml
       - destroy-environment:
           id: "${CIRCLE_WORKFLOW_ID:0:7}"
-            
-
+          
 
   run-migrations:
     docker:
@@ -393,8 +384,6 @@ jobs:
           WorkflowId: "${CIRCLE_WORKFLOW_ID:0:7}"
 
 
-
-
   cleanup:
     docker:
       - image: cimg/base:stable
@@ -419,6 +408,7 @@ jobs:
             fi
   
 
+            
             
             
 workflows:
