@@ -3,3 +3,6 @@ https://github.com/TasneemHegazy/Cloud_project_3
 
 Public URL for your S3 Bucket:
 http://udapeople-60ecb3e.s3-website-us-east-1.amazonaws.com
+
+CloudFront domain name URL:
+http://d1jzk2eht537tw.cloudfront.net
