@@ -1,21 +1,20 @@
 ## AutoDeployX
 
-Welcome to the AutoDeployX project repository! This repository showcases my proficiency in Continuous Integration and Continuous Deployment (CI/CD) techniques for achieving automated build and deployment of cloud-based software products.
+This repository demonstrates my expertise in Continuous Integration and Continuous Deployment (CI/CD) techniques for achieving automated build and deployment of cloud-based software products.
 
 ### Purpose
 
-The purpose of this repository is to demonstrate my skills and knowledge in the following areas:
+The purpose of this repository is to showcase my skills and knowledge in the following areas:
 
-- Explaining the fundamentals and benefits of CI/CD to achieve, build, and deploy automation for cloud-based software products.
-- Designing and building CI/CD pipelines that support Continuous Delivery processes, utilizing Deployment Strategies.
-- Utilizing a configuration management tool to accomplish deployment to cloud-based servers.
-- Utilizing centralized structured logging to surface critical server errors for diagnosis.
+- Explaining the fundamentals and benefits of CI/CD to automate the build and deployment process for cloud-based software products.
+- Designing and implementing robust CI/CD pipelines that support Continuous Delivery processes, utilizing efficient Deployment Strategies.
+- Utilizing advanced configuration management tools to streamline deployment to cloud-based servers.
+- Implementing centralized structured logging to effectively diagnose and address critical server errors.
 
 ![Diagram of CI/CD Pipeline we will be building.](udapeople.png)
 
 - A text file named `urls.txt` including:
-  1. Public Url to GitHub repository (not private) [URL01]
-  1. Public URL for your S3 Bucket (aka, your green candidate front-end) [URL02]![Alt text](URL02_SCREENSHOT-1.png)
+  1. Public URL for your S3 Bucket (aka, your green candidate front-end) [URL02]![Alt text](URL02_SCREENSHOT.png)
   1. Public URL for your CloudFront distribution (aka, your blue production front-end) [URL03]![Alt text](URL03_SCREENSHOT.png)
   1. Public URLs to deployed application back-end in EC2 [URL04]![Alt text](URL04_SCREENSHOT.png)
   1. Public URL to your Prometheus Server [URL05]![Alt text](URL05_SCREENSHOT.png)
