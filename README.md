@@ -13,13 +13,6 @@ The purpose of this repository is to demonstrate my skills and knowledge in the 
 
 ![Diagram of CI/CD Pipeline we will be building.](udapeople.png)
 
-### Instructions
-
-* [Selling CI/CD](instructions/0-selling-cicd.md)
-* [Getting Started](instructions/1-getting-started.md)
-* [Deploying Working, Trustworthy Software](instructions/2-deploying-trustworthy-code.md)
-* [Configuration Management](instructions/3-configuration-management.md)
-* [Turn Errors into Sirens](instructions/4-turn-errors-into-sirens.md)
 
 - A text file named `urls.txt` including:
   1. Public Url to GitHub repository (not private) [URL01]
