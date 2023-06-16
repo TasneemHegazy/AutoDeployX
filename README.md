@@ -11,8 +11,6 @@ The purpose of this repository is to showcase my skills and knowledge in the fol
 - Utilizing advanced configuration management tools to streamline deployment to cloud-based servers.
 - Implementing centralized structured logging to effectively diagnose and address critical server errors.
 
-![Diagram of CI/CD Pipeline we will be building.](udapeople.png)
-
 - A text file named `urls.txt` including:
   1. Public URL for your S3 Bucket (aka, your green candidate front-end) [URL02]![Alt text](URL02_SCREENSHOT.png)
   1. Public URL for your CloudFront distribution (aka, your blue production front-end) [URL03]![Alt text](URL03_SCREENSHOT.png)
@@ -41,7 +39,3 @@ The purpose of this repository is to showcase my skills and knowledge in the fol
 - [CloudFormation](https://aws.amazon.com/cloudformation/) - Infrastrcuture as code
 - [Ansible](https://www.ansible.com/) - Configuration management tool
 - [Prometheus](https://prometheus.io/) - Monitoring tool
-
-### License
-
-[License](LICENSE.md)
